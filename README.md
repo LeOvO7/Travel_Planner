@@ -114,7 +114,7 @@ An SSE streaming interface that returns the real-time travel planning process.
 **Request Body:**
 ```json
 {
-  "destination": "Tokyo",
+  "destination": "New York",
   "travel_dates": "May 15-20, 2026"
 }
 ```
@@ -139,9 +139,6 @@ An SSE streaming interface that returns the real-time travel planning process.
 - **React / Vue 3** 
 - **Tailwind CSS** 
 
-##  Detailed Documentation
-
-- [API Docs](http://localhost:8000/docs) - FastAPI Automatically Generated API Documentation
 
 ##  Features
 
