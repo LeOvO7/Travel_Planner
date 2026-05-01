@@ -166,9 +166,4 @@ An SSE streaming interface that returns the real-time travel planning process.
 - [ ] Support multi-day itinerary planning
 - [ ] Add a user feedback mechanism
 
-
-##  License
-
-MIT License
-
 ---
