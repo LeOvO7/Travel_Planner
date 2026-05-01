@@ -128,13 +128,10 @@ An SSE streaming interface that returns the real-time travel planning process.
 
 ##  Tech Stack
 
-### Backend
 - **FastAPI** 
 - **LangGraph** 
 - **OpenAI GPT-4** 
 - **Server-Sent Events (SSE)** 
-
-### Frontend
 - **Vite** 
 - **React / Vue 3** 
 - **Tailwind CSS** 
