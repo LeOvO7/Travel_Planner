@@ -1,4 +1,4 @@
-#  Travel Planner 
+#  Weather-Based Travel Planner 
 
 AI-powered travel planning assistant with weather-based recommendations, now with a modern web interface!
 
