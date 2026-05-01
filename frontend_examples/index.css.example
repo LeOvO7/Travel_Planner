@@ -1,0 +1,202 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =====================================================
+   自定义样式 - Smart Travel Planner
+   ===================================================== */
+
+/* 全局样式 */
+@layer base {
+  body {
+    @apply bg-gray-50 text-gray-900 antialiased;
+  }
+
+  /* 自定义滚动条 */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #CBD5E1;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #94A3B8;
+  }
+
+  /* 代码块样式 */
+  code {
+    @apply px-1.5 py-0.5 bg-gray-100 rounded text-sm font-mono;
+  }
+
+  /* kbd 标签样式 */
+  kbd {
+    @apply px-2 py-1 bg-gray-100 border border-gray-300 rounded text-xs font-semibold shadow-sm;
+  }
+}
+
+/* 自定义组件样式 */
+@layer components {
+  /* 消息气泡阴影 */
+  .message-bubble {
+    @apply shadow-sm hover:shadow-md transition-shadow;
+  }
+
+  /* 侧边栏项目悬停效果 */
+  .sidebar-item {
+    @apply transition-all duration-200 hover:bg-gray-800/50 rounded-lg;
+  }
+
+  /* 输入框焦点效果 */
+  .input-focus {
+    @apply focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none;
+  }
+
+  /* 按钮通用样式 */
+  .btn-primary {
+    @apply px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg
+           font-medium transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed;
+  }
+
+  .btn-secondary {
+    @apply px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg
+           font-medium transition-colors;
+  }
+
+  /* 卡片样式 */
+  .card {
+    @apply bg-white rounded-lg shadow-sm border border-gray-200 p-4;
+  }
+}
+
+/* 工具类 */
+@layer utilities {
+  /* 渐变背景 */
+  .gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+
+  .gradient-secondary {
+    background: linear-gradient(135deg, #667eea 0%, #f093fb 100%);
+  }
+
+  /* 文本渐变 */
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600;
+  }
+
+  /* 隐藏滚动条但保持滚动功能 */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* 细滚动条 */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  /* 玻璃态效果（可选） */
+  .glass {
+    @apply bg-white/80 backdrop-blur-lg border border-white/20;
+  }
+
+  /* 悬停提升效果 */
+  .hover-lift {
+    @apply transition-transform hover:-translate-y-1;
+  }
+}
+
+/* 自定义动画 */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite linear;
+  background: linear-gradient(
+    to right,
+    #f6f7f8 0%,
+    #edeef1 20%,
+    #f6f7f8 40%,
+    #f6f7f8 100%
+  );
+  background-size: 1000px 100%;
+}
+
+/* 打字机效果（可选，用于流式文本） */
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes blink {
+  50% {
+    border-color: transparent;
+  }
+}
+
+.typing-animation {
+  overflow: hidden;
+  border-right: 2px solid;
+  white-space: nowrap;
+  animation: typing 3.5s steps(40, end), blink 0.75s step-end infinite;
+}
+
+/* 响应式工具 */
+@media (max-width: 768px) {
+  /* 移动端优化 */
+  .mobile-full {
+    @apply w-full;
+  }
+
+  .mobile-hide {
+    @apply hidden;
+  }
+}
+
+/* 深色模式支持（可选） */
+@media (prefers-color-scheme: dark) {
+  /* 如果需要支持系统深色模式，在这里添加样式 */
+  /*
+  .dark-mode {
+    @apply bg-gray-900 text-white;
+  }
+  */
+}
+
+/* 打印样式（可选） */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    @apply bg-white text-black;
+  }
+}

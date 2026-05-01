@@ -1,0 +1,14 @@
+# FastAPI Backend Dependencies
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+pydantic==2.9.2
+python-multipart==0.0.12
+
+# Core dependencies (from parent project)
+langchain-core==0.3.17
+langchain-openai==0.2.8
+langgraph==0.2.45
+requests==2.32.3
+
+# Optional: for better performance
+# aiofiles==24.1.0
