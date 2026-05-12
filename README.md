@@ -6,6 +6,8 @@ AI-powered travel planning assistant with real-time weather insights, intelligen
 
 ## 📸 Screenshots
 
+> **📝 Note:** The screenshots below are from the development/debug version of the application. You may notice debug helper windows and developer tools in some views - these are development aids and won't appear in production builds.
+
 ### Desktop Interface
 
 <div align="center">
@@ -466,20 +468,6 @@ Contributions are welcome! Areas for improvement:
 
 ## 📄 License
 
-MIT License - feel free to use this project for personal or commercial purposes.
-
-## 🙏 Acknowledgments
-
-- **OpenAI** - GPT-4 language model
-- **LangChain/LangGraph** - AI agent framework
-- **FastAPI** - Modern Python web framework
-- **React Team** - React library
-- **Tailwind Labs** - Tailwind CSS
-- **OpenWeather** - Weather data API
-- **Google Maps** - Mapping services
-
+MIT License 
 ---
 
-**Happy Travels!** 🌍✈️🎒
-
-For questions, issues, or suggestions, please open an issue on GitHub.
