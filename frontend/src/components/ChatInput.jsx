@@ -102,29 +102,29 @@ export default function ChatInput({ onSubmit, isLoading, hasInitialInput = false
     : destination.trim().length > 0;
 
   const dateInputClass =
-    'w-full pl-8 md:pl-10 pr-3 md:pr-4 py-2 md:py-2.5 border border-[#E2E8F0] rounded-lg ' +
+    'w-full pl-10 pr-4 py-2.5 border border-[#E2E8F0] rounded-lg ' +
     'focus:ring-2 focus:ring-[#6366F1] focus:border-transparent ' +
     'outline-none transition-all disabled:bg-slate-50 disabled:text-[#64748B] ' +
     'text-sm text-[#0F172A]';
 
   return (
     <div className="border-t border-[#E2E8F0] bg-white">
-      <div className="max-w-4xl mx-auto p-3 md:p-5">
+      <div className="max-w-4xl mx-auto p-5">
         <form onSubmit={handleSubmit} className="space-y-3">
           {/* Departure and Destination inputs - Hidden after initial input */}
           {!hasInitialInput && (
-            <div className="grid md:grid-cols-2 gap-2 md:gap-3">
+            <div className="grid md:grid-cols-2 gap-3">
               {/* Departure */}
               <div>
-                <label className="block text-[10px] md:text-xs font-medium text-[#64748B] mb-0.5 md:mb-1">Departure</label>
+                <label className="block text-xs font-medium text-[#64748B] mb-1">Departure</label>
                 <div className="relative">
-                  <Navigation className="absolute left-2.5 md:left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 md:w-4 md:h-4 text-[#64748B] pointer-events-none" />
+                  <Navigation className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#64748B] pointer-events-none" />
                   <input
                     type="text"
                     value={departure}
                     onChange={(e) => setDeparture(e.target.value)}
                     disabled={isBusy}
-                    className="w-full pl-8 md:pl-10 pr-3 md:pr-4 py-2 md:py-2.5 border border-[#E2E8F0] rounded-lg
+                    className="w-full pl-10 pr-4 py-2.5 border border-[#E2E8F0] rounded-lg
                              focus:ring-2 focus:ring-[#6366F1] focus:border-transparent
                              outline-none transition-all disabled:bg-slate-50 disabled:text-[#64748B]
                              text-sm text-[#0F172A]"
@@ -134,15 +134,15 @@ export default function ChatInput({ onSubmit, isLoading, hasInitialInput = false
 
               {/* Destination */}
               <div>
-                <label className="block text-[10px] md:text-xs font-medium text-[#64748B] mb-0.5 md:mb-1">Destination</label>
+                <label className="block text-xs font-medium text-[#64748B] mb-1">Destination</label>
                 <div className="relative">
-                  <MapPin className="absolute left-2.5 md:left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 md:w-4 md:h-4 text-[#64748B] pointer-events-none" />
+                  <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#64748B] pointer-events-none" />
                   <input
                     type="text"
                     value={destination}
                     onChange={(e) => setDestination(e.target.value)}
                     disabled={isBusy}
-                    className="w-full pl-8 md:pl-10 pr-3 md:pr-4 py-2 md:py-2.5 border border-[#E2E8F0] rounded-lg
+                    className="w-full pl-10 pr-4 py-2.5 border border-[#E2E8F0] rounded-lg
                              focus:ring-2 focus:ring-[#6366F1] focus:border-transparent
                              outline-none transition-all disabled:bg-slate-50 disabled:text-[#64748B]
                              text-sm text-[#0F172A]"
@@ -154,12 +154,12 @@ export default function ChatInput({ onSubmit, isLoading, hasInitialInput = false
 
           {/* Date range inputs - Hidden after initial input */}
           {!hasInitialInput && (
-            <div className="grid md:grid-cols-2 gap-2 md:gap-3">
+            <div className="grid md:grid-cols-2 gap-3">
               {/* Start Date */}
               <div>
-                <label className="block text-[10px] md:text-xs font-medium text-[#64748B] mb-0.5 md:mb-1">Start Date</label>
+                <label className="block text-xs font-medium text-[#64748B] mb-1">Start Date</label>
                 <div className="relative">
-                  <Calendar className="absolute left-2.5 md:left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 md:w-4 md:h-4 text-[#64748B] pointer-events-none z-10" />
+                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#64748B] pointer-events-none z-10" />
                   <DatePicker
                     selected={startDate}
                     onChange={(date) => {
@@ -178,9 +178,9 @@ export default function ChatInput({ onSubmit, isLoading, hasInitialInput = false
 
               {/* End Date */}
               <div>
-                <label className="block text-[10px] md:text-xs font-medium text-[#64748B] mb-0.5 md:mb-1">End Date</label>
+                <label className="block text-xs font-medium text-[#64748B] mb-1">End Date</label>
                 <div className="relative">
-                  <Calendar className="absolute left-2.5 md:left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 md:w-4 md:h-4 text-[#64748B] pointer-events-none z-10" />
+                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#64748B] pointer-events-none z-10" />
                   <DatePicker
                     selected={endDate}
                     onChange={(date) => setEndDate(date)}
