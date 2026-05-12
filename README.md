@@ -2,8 +2,6 @@
 
 AI-powered travel planning assistant with real-time weather insights, intelligent recommendations, and interactive map visualization.
 
-> **🎥 Live Demo Coming Soon** | [View Screenshots](#-screenshots)
-
 ## 📸 Screenshots
 
 > **📝 Note:** The screenshots below are from the development/debug version of the application. You may notice debug helper windows and developer tools in some views - these are development aids and won't appear in production builds.
@@ -123,9 +121,6 @@ Whether/
 │   │   └── main.jsx           # Application entry point
 │   ├── package.json           # Node dependencies
 │   └── ...
-├── frontend_examples/         # Example code and templates
-│   ├── react/                 # React component examples
-│   └── vue/                   # Vue component examples
 ├── travel_agent.py            # Core AI agent logic (LangGraph)
 ├── .env                       # API keys (not in git)
 ├── .env.example               # Environment template
@@ -439,17 +434,6 @@ npm cache clean --force
 rm -rf node_modules package-lock.json
 npm install
 ```
-
-## 📚 Example Frontend Templates
-
-The `frontend_examples/` directory contains reference implementations:
-
-- **React Components** - Complete examples with various features
-- **Vue Components** - Vue 3 equivalents
-- **HTML Demo** - Standalone HTML file for quick testing
-- **Tailwind Config** - Complete Tailwind configuration
-
-These are provided as learning resources and can be used as starting points for customization.
 
 ## 🤝 Contributing
 
