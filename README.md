@@ -371,7 +371,7 @@ npm run lint        # Lint code
 - **State Management** - React hooks (useState, useEffect, useRef)
 - **API Layer** - Fetch API with SSE support
 
-## 🔐 Security Best Practices
+## 🔐 Security
 
 ⚠️ **Important Security Notes:**
 
