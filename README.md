@@ -2,7 +2,7 @@
 
 AI-powered travel planning assistant with real-time weather insights, intelligent recommendations, and interactive map visualization.
 
-## 📸 Screenshots
+## 📸 Overview
 
 > **📝 Note:** The screenshots below are from the development/debug version of the application. You may notice debug helper windows and developer tools in some views - these are development aids and won't appear in production builds.
 
