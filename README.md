@@ -2,6 +2,60 @@
 
 AI-powered travel planning assistant with real-time weather insights, intelligent recommendations, and interactive map visualization.
 
+> **🎥 Live Demo Coming Soon** | [View Screenshots](#-screenshots)
+
+## 📸 Screenshots
+
+### Desktop Interface
+
+<div align="center">
+  <img src="screenshots/1.png" alt="Main Interface" width="800"/>
+  <p><i>Main planning interface with real-time AI chat</i></p>
+</div>
+
+<table>
+  <tr>
+    <td width="50%">
+      <img src="screenshots/2.png" alt="AI Agent Response"/>
+      <p align="center"><b>💬 AI Agent Response</b><br/>Real-time streaming chat with structured data</p>
+    </td>
+    <td width="50%">
+      <img src="screenshots/3.png" alt="Share Interface"/>
+      <p align="center"><b>🔗 Share Interface</b><br/>Share travel plans with others</p>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2">
+      <img src="screenshots/4.png" alt="Interactive Map View"/>
+      <p align="center"><b>🗺️ Interactive Map</b><br/>Google Maps integration with color-coded markers</p>
+    </td>
+  </tr>
+</table>
+
+### Mobile Responsive Design
+
+<div align="center">
+  <table>
+    <tr>
+      <td width="33%">
+        <img src="screenshots/m1.png" alt="Mobile Main Interface"/>
+        <p align="center"><b>Main View</b></p>
+      </td>
+      <td width="33%">
+        <img src="screenshots/m2.png" alt="Mobile Chat View"/>
+        <p align="center"><b>Chat View</b></p>
+      </td>
+      <td width="33%">
+        <img src="screenshots/m3.png" alt="Mobile Map View"/>
+        <p align="center"><b>Map View</b></p>
+      </td>
+    </tr>
+  </table>
+  <p><i>📱 Fully optimized for mobile devices</i></p>
+</div>
+
+---
+
 ## 🌟 Features
 
 ### Core Capabilities
@@ -100,7 +154,14 @@ cd Whether
 
 #### 2. Configure Environment Variables
 
-Create a `.env` file in the root directory:
+Copy the example environment file and add your API keys:
+
+```bash
+# Copy the example file
+cp .env.example .env
+```
+
+Then edit `.env` in the root directory with your API keys:
 
 ```bash
 # OpenWeather API Key
@@ -112,9 +173,11 @@ OPENAI_API_KEY=your_openai_key_here
 # RapidAPI Key (optional - for flights, hotels)
 RAPIDAPI_KEY=your_rapidapi_key_here
 
-# Google Maps API Key (for frontend)
+# Google Maps API Key (for frontend map display)
 VITE_GOOGLE_MAPS_API_KEY=your_google_maps_key_here
 ```
+
+**Note:** All environment variables are configured in the root `.env` file (not in `frontend/.env`). The Vite frontend is configured to read from the root directory.
 
 #### 3. Install Backend Dependencies
 

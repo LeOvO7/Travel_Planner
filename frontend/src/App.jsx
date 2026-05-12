@@ -14,7 +14,10 @@ const API_URL = 'http://localhost:8000/api/travel/stream';
  * Main App Component
  */
 export default function App() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  // Initialize sidebar based on screen size
+  const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
+    return window.innerWidth >= 768;
+  });
   const [sessions, setSessions] = useState([]);
   const [currentSessionId, setCurrentSessionId] = useState(null);
   const [isStreaming, setIsStreaming] = useState(false);
@@ -25,6 +28,18 @@ export default function App() {
   const scrollContainerRef = useRef(null);
 
   const currentSession = sessions.find(s => s.id === currentSessionId);
+
+  // Handle window resize to auto-close sidebar on mobile
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768 && isSidebarOpen) {
+        setIsSidebarOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [isSidebarOpen]);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -311,16 +326,16 @@ export default function App() {
         return (
           <>
             {/* Top header bar */}
-            <div className={`bg-white border-b border-[#E2E8F0] py-4 shadow-sm transition-all duration-300 ${isSidebarOpen ? 'px-6' : 'pl-16 pr-6'}`}>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#6366F1] flex items-center justify-center shadow-sm">
-                  <Plane className="w-5 h-5 text-white" />
+            <div className={`bg-white border-b border-[#E2E8F0] py-3 md:py-4 shadow-sm transition-all duration-300 ${isSidebarOpen ? 'px-3 md:px-6' : 'px-3 md:pl-16 md:pr-6'}`}>
+              <div className="flex items-center gap-2 md:gap-3">
+                <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-[#6366F1] flex items-center justify-center shadow-sm flex-shrink-0">
+                  <Plane className="w-4 h-4 md:w-5 md:h-5 text-white" />
                 </div>
-                <div>
-                  <h1 className="text-lg font-semibold text-[#0F172A]">
+                <div className="min-w-0 flex-1">
+                  <h1 className="text-base md:text-lg font-semibold text-[#0F172A] truncate">
                     {currentSession?.title || 'Smart Travel Planner'}
                   </h1>
-                  <p className="text-sm text-[#64748B]">
+                  <p className="text-xs md:text-sm text-[#64748B] hidden sm:block truncate">
                     AI-powered travel planning with real-time insights
                   </p>
                 </div>
@@ -328,8 +343,8 @@ export default function App() {
             </div>
 
             {/* Message list area */}
-            <div ref={scrollContainerRef} className="flex-1 overflow-y-auto px-6 py-8">
-              <div className="max-w-4xl mx-auto">
+            <div ref={scrollContainerRef} className="flex-1 overflow-y-auto overflow-x-hidden px-3 md:px-6 py-4 md:py-8">
+              <div className="max-w-4xl mx-auto w-full">
                 {!currentSession || currentSession.messages.length === 0 ? (
                   <EmptyState />
                 ) : (
@@ -392,7 +407,7 @@ export default function App() {
       <div
         className={`
           flex-1 flex flex-col transition-all duration-300
-          ${isSidebarOpen ? 'ml-64' : 'ml-0'}
+          ${isSidebarOpen ? 'md:ml-64' : 'ml-0'}
         `}
       >
         {renderMainContent()}
@@ -403,17 +418,17 @@ export default function App() {
 
 function EmptyState() {
   return (
-    <div className="flex flex-col items-center justify-center text-center py-16">
-      <div className="w-20 h-20 rounded-full bg-indigo-50 flex items-center justify-center mb-6">
-        <Sparkles className="w-10 h-10 text-[#6366F1]" />
+    <div className="flex flex-col items-center justify-center text-center py-8 md:py-16 px-3">
+      <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-indigo-50 flex items-center justify-center mb-4 md:mb-6">
+        <Sparkles className="w-8 h-8 md:w-10 md:h-10 text-[#6366F1]" />
       </div>
-      <h2 className="text-2xl font-semibold text-[#0F172A] mb-3">
+      <h2 className="text-xl md:text-2xl font-semibold text-[#0F172A] mb-2 md:mb-3">
         Welcome to Smart Travel Planner
       </h2>
-      <p className="text-[#64748B] mb-10 max-w-md leading-relaxed">
+      <p className="text-sm md:text-base text-[#64748B] mb-6 md:mb-10 max-w-md leading-relaxed px-4">
         Plan your perfect trip with AI-powered recommendations based on real-time weather data
       </p>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-2xl w-full">
+      <div className="grid grid-cols-3 gap-2 md:gap-5 max-w-2xl w-full px-2">
         <FeatureCard
           icon="🌤️"
           title="Weather Insights"
@@ -430,7 +445,7 @@ function EmptyState() {
           description="Weather-suitable activities for your trip"
         />
       </div>
-      <p className="text-xs text-[#94A3B8] mt-10">
+      <p className="text-xs text-[#94A3B8] mt-6 md:mt-10 px-4">
         Click <span className="font-semibold text-[#6366F1]">+ New Trip Planning</span> in the sidebar, or just type below
       </p>
     </div>
@@ -439,10 +454,10 @@ function EmptyState() {
 
 function FeatureCard({ icon, title, description }) {
   return (
-    <div className="bg-white rounded-xl p-5 border border-[#E2E8F0] shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-1 cursor-default text-left">
-      <div className="text-3xl mb-3">{icon}</div>
-      <h3 className="font-semibold text-[#0F172A] mb-1">{title}</h3>
-      <p className="text-sm text-[#64748B] leading-relaxed">{description}</p>
+    <div className="bg-white rounded-lg md:rounded-xl p-2.5 md:p-5 border border-[#E2E8F0] shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-1 cursor-default text-left">
+      <div className="text-2xl md:text-3xl mb-1.5 md:mb-3">{icon}</div>
+      <h3 className="font-semibold text-[#0F172A] mb-0.5 md:mb-1 text-xs md:text-base">{title}</h3>
+      <p className="text-[10px] md:text-sm text-[#64748B] leading-relaxed hidden md:block">{description}</p>
     </div>
   );
 }

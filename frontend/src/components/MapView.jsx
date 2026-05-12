@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import {
   ArrowLeft, Layers, Building2, Utensils, Landmark,
-  Star, MapPin, AlertCircle
+  Star, MapPin, AlertCircle, List
 } from 'lucide-react';
 import { useGoogleMaps } from '../hooks/useGoogleMaps';
 import { createMarkerForPlace } from '../utils/googleMapsMarkers';
@@ -111,6 +111,7 @@ export default function MapView({ session, onBack }) {
   // Component state
   const [selectedId, setSelectedId] = useState(null);
   const [activeFilter, setActiveFilter] = useState('all');
+  const [showListOnMobile, setShowListOnMobile] = useState(false);
 
   // Build places from real session data
   const structuredData = useMemo(() => extractStructuredData(session), [session]);
@@ -347,8 +348,41 @@ export default function MapView({ session, onBack }) {
         </div>
       </div>
 
+      {/* Mobile list toggle button */}
+      <button
+        onClick={() => setShowListOnMobile(!showListOnMobile)}
+        className="md:hidden fixed top-4 left-4 z-[1001] bg-white border border-[#E2E8F0] rounded-lg p-2.5 shadow-lg hover:bg-slate-50 transition-colors"
+        title={showListOnMobile ? 'Hide list' : 'Show list'}
+      >
+        <List className="w-5 h-5 text-[#0F172A]" />
+      </button>
+
+      {/* Mobile back button */}
+      <button
+        onClick={onBack}
+        className="md:hidden fixed top-4 right-4 z-[1001] bg-white border border-[#E2E8F0] rounded-lg p-2.5 shadow-lg hover:bg-slate-50 transition-colors flex items-center gap-1.5"
+        title="Back to chat"
+      >
+        <ArrowLeft className="w-4 h-4 text-[#0F172A]" />
+        <span className="text-sm font-medium text-[#0F172A]">Back</span>
+      </button>
+
+      {/* Backdrop for mobile list */}
+      {showListOnMobile && (
+        <div
+          className="md:hidden fixed inset-0 bg-black/50 z-[999]"
+          onClick={() => setShowListOnMobile(false)}
+        />
+      )}
+
       {/* Left list panel */}
-      <div className="w-[340px] bg-white border-r border-[#E2E8F0] flex flex-col flex-shrink-0">
+      <div className={`
+        w-full max-w-[85vw] md:w-[340px] bg-white border-r border-[#E2E8F0] flex flex-col flex-shrink-0
+        md:relative md:translate-x-0
+        max-md:fixed max-md:left-0 max-md:top-0 max-md:h-full max-md:z-[1000]
+        max-md:transition-transform max-md:duration-300
+        ${showListOnMobile ? 'max-md:translate-x-0' : 'max-md:-translate-x-full'}
+      `}>
         {/* Header */}
         <div className="px-5 py-[18px] border-b border-[#E2E8F0]">
           <button

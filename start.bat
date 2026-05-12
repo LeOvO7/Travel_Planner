@@ -36,7 +36,11 @@ echo   Frontend: http://localhost:5173
 echo   API Docs: http://localhost:8000/docs
 echo ========================================
 echo.
-echo Tip: Closing this window will not stop the services
-echo To stop services, close the respective windows or run stop.bat
+echo Opening web browser...
+timeout /t 3 /nobreak >nul
+start http://localhost:5173
+echo.
+echo Application is now running!
+echo To stop services, close the respective windows.
 echo.
 pause

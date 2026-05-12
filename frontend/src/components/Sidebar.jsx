@@ -19,12 +19,20 @@ export default function Sidebar({
 
   return (
     <>
+      {/* Backdrop overlay for mobile */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-30 md:hidden"
+          onClick={onToggle}
+        />
+      )}
+
       {/* Sidebar */}
       <div
         className={`
           fixed left-0 top-0 h-full bg-slate-900 text-white
           transition-all duration-300 ease-in-out z-40
-          ${isOpen ? 'w-64' : 'w-0'}
+          ${isOpen ? 'w-64 md:w-64 max-md:shadow-2xl' : 'w-0'}
           overflow-hidden
         `}
       >

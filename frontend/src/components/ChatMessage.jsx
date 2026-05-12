@@ -38,10 +38,10 @@ export default function ChatMessage({ message, isLatest = false }) {
 // User message
 function UserMessage({ message }) {
   return (
-    <div className="flex gap-4 mb-6 justify-end">
-      <div className="max-w-[80%] lg:max-w-[70%]">
-        <div className="bg-[#6366F1] text-white rounded-2xl rounded-tr-sm px-4 py-3 shadow-sm">
-          <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
+    <div className="flex gap-2 md:gap-4 mb-4 md:mb-6 justify-end">
+      <div className="max-w-[95%] md:max-w-[80%] lg:max-w-[70%]">
+        <div className="bg-[#6366F1] text-white rounded-2xl rounded-tr-sm px-3 py-2 md:px-4 md:py-3 shadow-sm">
+          <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">{message.content}</p>
         </div>
         {message.metadata && (
           <div className="text-xs text-[#64748B] mt-1.5 text-right">
@@ -96,15 +96,15 @@ function AssistantMessage({ message }) {
   const hasCards = flights.length > 0 || hotels.length > 0 || attractions.length > 0 || restaurants.length > 0;
 
   return (
-    <div className="flex gap-4 mb-6">
+    <div className="flex gap-2 md:gap-4 mb-4 md:mb-6">
       <div className="flex-shrink-0">
-        <div className="w-8 h-8 rounded-full bg-[#6366F1] flex items-center justify-center shadow-sm">
-          <Bot className="w-4 h-4 text-white" />
+        <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-[#6366F1] flex items-center justify-center shadow-sm">
+          <Bot className="w-3.5 h-3.5 md:w-4 md:h-4 text-white" />
         </div>
       </div>
-      <div className="flex-1 max-w-[85%] lg:max-w-[80%]">
+      <div className="flex-1 max-w-[95%] md:max-w-[85%] lg:max-w-[80%] min-w-0">
         {/* Markdown content */}
-        <div className="bg-white border border-[#E2E8F0] rounded-2xl rounded-tl-sm px-5 py-4 shadow-sm">
+        <div className="bg-white border border-[#E2E8F0] rounded-2xl rounded-tl-sm px-3 py-3 md:px-5 md:py-4 shadow-sm overflow-hidden">
           <MarkdownRenderer content={message.content} />
         </div>
 
