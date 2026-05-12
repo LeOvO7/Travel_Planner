@@ -403,20 +403,6 @@ Contributions are welcome! Areas for improvement:
 
 ## 📄 License
 
-MIT License - feel free to use this project for personal or commercial purposes.
-
-## 🙏 Acknowledgments
-
-- **OpenAI** - GPT-4 language model
-- **LangChain/LangGraph** - AI agent framework
-- **FastAPI** - Modern Python web framework
-- **React Team** - React library
-- **Tailwind Labs** - Tailwind CSS
-- **OpenWeather** - Weather data API
-- **Google Maps** - Mapping services
-
+MIT License 
 ---
 
-**Happy Travels!** 🌍✈️🎒
-
-For questions, issues, or suggestions, please open an issue on GitHub.
