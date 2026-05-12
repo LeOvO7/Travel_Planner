@@ -1,6 +1,6 @@
 <template>
-  <div class="flex h-screen bg-gray-50 overflow-hidden">
-    <!-- 侧边栏 -->
+  <div class="flex h-screen bg-[#F8FAFC] overflow-hidden">
+    <!-- Sidebar -->
     <Sidebar
       :isOpen="isSidebarOpen"
       :sessions="sessions"
@@ -11,32 +11,32 @@
       @deleteSession="deleteSession"
     />
 
-    <!-- 主聊天区域 -->
+    <!-- Main chat area -->
     <div
       :class="[
         'flex-1 flex flex-col transition-all duration-300',
         isSidebarOpen ? 'ml-64' : 'ml-0'
       ]"
     >
-      <!-- 顶部标题栏 -->
-      <div class="bg-white border-b border-gray-200 px-6 py-4">
+      <!-- Top header bar -->
+      <div class="bg-white border-b border-[#E2E8F0] px-6 py-4 shadow-sm">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+          <div class="w-10 h-10 rounded-xl bg-[#6366F1] flex items-center justify-center shadow-sm">
             <span class="text-white text-xl">✈️</span>
           </div>
           <div>
-            <h1 class="text-lg font-semibold text-gray-900">
+            <h1 class="text-lg font-semibold text-[#0F172A]">
               {{ currentSession?.title || 'Smart Travel Planner' }}
             </h1>
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-[#64748B]">
               AI-powered travel planning with real-time insights
             </p>
           </div>
         </div>
       </div>
 
-      <!-- 消息列表区域 -->
-      <div class="flex-1 overflow-y-auto px-6 py-6" ref="messagesContainer">
+      <!-- Message list area -->
+      <div class="flex-1 overflow-y-auto px-6 py-8" ref="messagesContainer">
         <div class="max-w-4xl mx-auto">
           <EmptyState v-if="currentSession?.messages.length === 0" />
           <ChatMessage
@@ -48,7 +48,7 @@
         </div>
       </div>
 
-      <!-- 输入框 -->
+      <!-- Input area -->
       <ChatInput :isLoading="isStreaming" @submit="handleSubmit" />
     </div>
   </div>
@@ -63,26 +63,20 @@ import EmptyState from './components/EmptyState.vue';
 
 const API_URL = 'http://localhost:8000/api/travel/stream';
 
-// 侧边栏状态
 const isSidebarOpen = ref(true);
-
-// 会话管理
 const sessions = ref([]);
 const currentSessionId = ref(null);
 const isStreaming = ref(false);
 const messagesContainer = ref(null);
 
-// 计算当前会话
 const currentSession = computed(() =>
   sessions.value.find(s => s.id === currentSessionId.value)
 );
 
-// 初始化：创建第一个会话
 if (sessions.value.length === 0) {
   createNewSession();
 }
 
-// 自动滚动到底部
 watch(() => currentSession.value?.messages.length, () => {
   nextTick(() => {
     if (messagesContainer.value) {
@@ -91,7 +85,6 @@ watch(() => currentSession.value?.messages.length, () => {
   });
 });
 
-// 创建新会话
 function createNewSession() {
   const newSession = {
     id: Date.now().toString(),
@@ -103,12 +96,10 @@ function createNewSession() {
   currentSessionId.value = newSession.id;
 }
 
-// 切换会话
 function selectSession(sessionId) {
   currentSessionId.value = sessionId;
 }
 
-// 删除会话
 function deleteSession(sessionId) {
   sessions.value = sessions.value.filter(s => s.id !== sessionId);
   if (currentSessionId.value === sessionId) {
@@ -120,7 +111,6 @@ function deleteSession(sessionId) {
   }
 }
 
-// 添加消息
 function addMessage(message) {
   const session = sessions.value.find(s => s.id === currentSessionId.value);
   if (session) {
@@ -128,7 +118,6 @@ function addMessage(message) {
   }
 }
 
-// 更新会话标题
 function updateSessionTitle(sessionId, title) {
   const session = sessions.value.find(s => s.id === sessionId);
   if (session) {
@@ -136,11 +125,9 @@ function updateSessionTitle(sessionId, title) {
   }
 }
 
-// 处理提交
 async function handleSubmit(data) {
   if (!currentSessionId.value) return;
 
-  // 添加用户消息
   addMessage({
     type: 'user',
     content: data.message || `Plan a trip to ${data.destination}`,
@@ -150,12 +137,10 @@ async function handleSubmit(data) {
     }
   });
 
-  // 更新会话标题
   if (currentSession.value.title === 'New Trip') {
     updateSessionTitle(currentSessionId.value, `Trip to ${data.destination}`);
   }
 
-  // 开始流式请求
   isStreaming.value = true;
 
   try {
@@ -170,7 +155,6 @@ async function handleSubmit(data) {
   }
 }
 
-// SSE 流式请求
 async function streamTravelPlan(destination, travelDates) {
   const response = await fetch(API_URL, {
     method: 'POST',

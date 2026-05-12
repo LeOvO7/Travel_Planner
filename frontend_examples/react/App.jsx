@@ -30,7 +30,7 @@ function useSSE() {
   const [status, setStatus] = useState('');
   const [toolCalls, setToolCalls] = useState([]);
   const [result, setResult] = useState('');
-  const [error, setError] = useState(null);       // { title, message, canReconnect }
+  const [error, setError] = useState(null);
   const [isStreaming, setIsStreaming] = useState(false);
 
   const abortRef = useRef(null);
@@ -55,10 +55,8 @@ function useSSE() {
   }
 
   const startStream = async (destination, travelDates) => {
-    // Duplicate-submission guard
     if (isStreaming) return;
 
-    // Reset state
     setStatus('');
     setToolCalls([]);
     setResult('');
@@ -68,7 +66,6 @@ function useSSE() {
     lastRequestRef.current = { destination, travelDates };
     abortRef.current = new AbortController();
 
-    // Request-level timeout
     requestTimeoutRef.current = setTimeout(() => {
       if (abortRef.current) abortRef.current.abort();
       cleanup();
@@ -88,7 +85,6 @@ function useSSE() {
         signal: abortRef.current.signal,
       });
 
-      // Clear request timeout
       if (requestTimeoutRef.current) { clearTimeout(requestTimeoutRef.current); requestTimeoutRef.current = null; }
 
       if (!response.ok) {
@@ -99,7 +95,6 @@ function useSSE() {
       const decoder = new TextDecoder();
       let buffer = '';
 
-      // Start heartbeat
       resetHeartbeat(() => {
         setIsStreaming(false);
         setError({
@@ -171,7 +166,7 @@ function useSSE() {
         }
       }
     } catch (err) {
-      if (err.name === 'AbortError') return; // handled by timeout callbacks
+      if (err.name === 'AbortError') return;
       const isNetworkError = err instanceof TypeError;
       setError({
         title: isNetworkError ? 'Connection Failed' : 'Error',
@@ -207,11 +202,8 @@ function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Duplicate-submission guard
     if (isStreaming) return;
 
-    // Cooldown guard
     const now = Date.now();
     if (now - lastSubmitRef.current < MIN_SUBMIT_INTERVAL) return;
 
@@ -222,10 +214,10 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-[#F8FAFC]">
       {/* ── Network status banner ── */}
       {!isOnline && (
-        <div className="fixed top-0 left-0 right-0 z-50 bg-red-600 text-white px-4 py-3 shadow-lg">
+        <div className="fixed top-0 left-0 right-0 z-50 bg-[#EF4444] text-white px-4 py-3 shadow-lg">
           <div className="max-w-4xl mx-auto flex items-center gap-3">
             <WifiOff className="w-5 h-5 flex-shrink-0" />
             <div>
@@ -236,7 +228,7 @@ function App() {
         </div>
       )}
       {isOnline && wasOffline && (
-        <div className="fixed top-0 left-0 right-0 z-50 bg-green-600 text-white px-4 py-3 shadow-lg">
+        <div className="fixed top-0 left-0 right-0 z-50 bg-[#10B981] text-white px-4 py-3 shadow-lg">
           <div className="max-w-4xl mx-auto flex items-center gap-3">
             <CheckCircle className="w-5 h-5 flex-shrink-0" />
             <p className="font-semibold">Back Online</p>
@@ -244,25 +236,25 @@ function App() {
         </div>
       )}
 
-      <div className={`container mx-auto px-4 py-8 max-w-4xl ${!isOnline ? 'pt-20' : ''}`}>
+      <div className={`container mx-auto px-4 py-10 max-w-4xl ${!isOnline ? 'pt-20' : ''}`}>
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">
+        <div className="text-center mb-10">
+          <h1 className="text-4xl font-bold text-[#0F172A] mb-3">
             Smart Travel Planner
           </h1>
-          <p className="text-gray-600">
+          <p className="text-[#64748B] text-lg">
             AI-powered travel planning with real-time weather insights
           </p>
         </div>
 
         {/* Form Card */}
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+        <div className="bg-white rounded-xl shadow-sm border border-[#E2E8F0] p-8 mb-8 hover:shadow-md transition-shadow duration-200">
           <form onSubmit={handleSubmit}>
-            <div className="grid md:grid-cols-2 gap-4 mb-4">
+            <div className="grid md:grid-cols-2 gap-5 mb-6">
               {/* Destination Input */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  <MapPin className="inline w-4 h-4 mr-1" />
+                <label className="block text-sm font-medium text-[#0F172A] mb-2">
+                  <MapPin className="inline w-4 h-4 mr-1 text-[#6366F1]" />
                   Destination
                 </label>
                 <input
@@ -270,15 +262,15 @@ function App() {
                   value={destination}
                   onChange={(e) => setDestination(e.target.value)}
                   placeholder="e.g., Tokyo, Paris, New York"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                  className="w-full px-4 py-2.5 border border-[#E2E8F0] rounded-lg focus:ring-2 focus:ring-[#6366F1] focus:border-transparent outline-none transition-all text-[#0F172A] placeholder:text-[#64748B]"
                   disabled={isStreaming}
                 />
               </div>
 
               {/* Travel Dates Input */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  <Calendar className="inline w-4 h-4 mr-1" />
+                <label className="block text-sm font-medium text-[#0F172A] mb-2">
+                  <Calendar className="inline w-4 h-4 mr-1 text-[#6366F1]" />
                   Travel Dates
                 </label>
                 <input
@@ -286,7 +278,7 @@ function App() {
                   value={travelDates}
                   onChange={(e) => setTravelDates(e.target.value)}
                   placeholder="e.g., May 15-20, 2026"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                  className="w-full px-4 py-2.5 border border-[#E2E8F0] rounded-lg focus:ring-2 focus:ring-[#6366F1] focus:border-transparent outline-none transition-all text-[#0F172A] placeholder:text-[#64748B]"
                   disabled={isStreaming}
                 />
               </div>
@@ -296,7 +288,7 @@ function App() {
             <button
               type="submit"
               disabled={isStreaming || !destination.trim() || !travelDates.trim()}
-              className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 flex items-center justify-center"
+              className="w-full bg-[#6366F1] hover:bg-indigo-600 active:bg-indigo-700 disabled:bg-slate-300 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center justify-center hover:shadow-md"
             >
               {isStreaming ? (
                 <>
@@ -312,41 +304,43 @@ function App() {
 
         {/* Status Display */}
         {status && (
-          <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-4 rounded">
+          <div className="bg-indigo-50 border-l-4 border-[#6366F1] p-4 mb-5 rounded-lg">
             <div className="flex items-center">
-              <Loader2 className="animate-spin w-5 h-5 text-blue-600 mr-2" />
-              <p className="text-blue-700">{status}</p>
+              <Loader2 className="animate-spin w-5 h-5 text-[#6366F1] mr-3" />
+              <p className="text-indigo-700 font-medium">{status}</p>
             </div>
           </div>
         )}
 
         {/* Tool Calls Display */}
         {toolCalls.length > 0 && (
-          <div className="bg-purple-50 border-l-4 border-purple-500 p-4 mb-4 rounded">
-            <h3 className="font-semibold text-purple-900 mb-2">AI Actions:</h3>
+          <div className="bg-white border border-[#E2E8F0] p-5 mb-5 rounded-xl shadow-sm">
+            <h3 className="font-semibold text-[#0F172A] mb-3">AI Actions:</h3>
             {toolCalls.map((call, idx) => (
-              <div key={idx} className="text-sm text-purple-700 mb-1">
-                <CheckCircle className="inline w-4 h-4 mr-1" />
-                Called <code className="bg-purple-100 px-2 py-1 rounded">{call.tool}</code>
-                {call.args.city && ` for ${call.args.city}`}
+              <div key={idx} className="text-sm text-[#64748B] mb-1.5 flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-[#10B981] flex-shrink-0" />
+                <span>
+                  Called <code className="bg-indigo-50 text-[#6366F1] px-2 py-0.5 rounded text-xs font-medium">{call.tool}</code>
+                  {call.args.city && ` for ${call.args.city}`}
+                </span>
               </div>
             ))}
           </div>
         )}
 
-        {/* ── Error Display (prominent red-border alert with Reconnect) ── */}
+        {/* ── Error Display ── */}
         {error && (
-          <div className="bg-red-50 border-2 border-red-400 p-5 mb-4 rounded-lg shadow-md">
+          <div className="bg-red-50 border-2 border-[#EF4444]/30 p-5 mb-5 rounded-xl shadow-sm">
             <div className="flex items-start gap-3">
-              <AlertCircle className="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" />
+              <AlertCircle className="w-6 h-6 text-[#EF4444] flex-shrink-0 mt-0.5" />
               <div className="flex-1">
-                <h3 className="text-base font-semibold text-red-900 mb-1">{error.title}</h3>
-                <p className="text-sm text-red-700 mb-3">{error.message}</p>
+                <h3 className="text-base font-semibold text-[#0F172A] mb-1">{error.title}</h3>
+                <p className="text-sm text-[#64748B] mb-3">{error.message}</p>
                 {error.canReconnect && (
                   <button
                     onClick={retry}
                     disabled={isStreaming}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 disabled:bg-gray-400 text-white rounded-lg font-medium transition-colors text-sm"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-[#EF4444] hover:bg-red-600 disabled:bg-slate-300 text-white rounded-lg font-medium transition-all duration-200 text-sm hover:shadow-md"
                   >
                     <RefreshCw className="w-4 h-4" />
                     Reconnect
@@ -359,13 +353,13 @@ function App() {
 
         {/* Result Display */}
         {result && (
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-              <CheckCircle className="w-6 h-6 text-green-600 mr-2" />
+          <div className="bg-white rounded-xl shadow-sm border border-[#E2E8F0] p-8 hover:shadow-md transition-shadow duration-200">
+            <h2 className="text-2xl font-bold text-[#0F172A] mb-4 flex items-center">
+              <CheckCircle className="w-6 h-6 text-[#10B981] mr-2" />
               Your Travel Guide
             </h2>
             <div className="prose prose-sm max-w-none">
-              <pre className="whitespace-pre-wrap font-sans text-gray-700 leading-relaxed">
+              <pre className="whitespace-pre-wrap font-sans text-[#0F172A] leading-relaxed">
                 {result}
               </pre>
             </div>

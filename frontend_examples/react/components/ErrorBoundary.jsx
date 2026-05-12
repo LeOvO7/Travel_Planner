@@ -2,8 +2,7 @@ import React from 'react';
 import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
 
 /**
- * ErrorBoundary - React 错误边界组件
- * 捕获子组件树中的 JavaScript 错误，防止整个应用崩溃
+ * ErrorBoundary - React error boundary component
  */
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -17,12 +16,10 @@ class ErrorBoundary extends React.Component {
   }
 
   static getDerivedStateFromError(error) {
-    // 更新 state 使下一次渲染能够显示降级后的 UI
     return { hasError: true };
   }
 
   componentDidCatch(error, errorInfo) {
-    // 记录错误信息
     console.error('ErrorBoundary caught an error:', error, errorInfo);
 
     this.setState(prevState => ({
@@ -31,12 +28,10 @@ class ErrorBoundary extends React.Component {
       errorCount: prevState.errorCount + 1,
     }));
 
-    // 可以将错误日志上报给服务器
     if (this.props.onError) {
       this.props.onError(error, errorInfo);
     }
 
-    // 如果错误频繁发生，可能需要特殊处理
     if (this.state.errorCount >= 3) {
       console.error('Too many errors detected. Please refresh the page.');
     }
@@ -60,7 +55,7 @@ class ErrorBoundary extends React.Component {
 
   render() {
     if (this.state.hasError) {
-      // 自定义降级 UI
+      // Custom fallback UI
       if (this.props.fallback) {
         return this.props.fallback({
           error: this.state.error,
@@ -69,31 +64,31 @@ class ErrorBoundary extends React.Component {
         });
       }
 
-      // 默认降级 UI
+      // Default fallback UI
       return (
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-          <div className="max-w-2xl w-full bg-white rounded-lg shadow-lg p-8">
-            {/* 错误图标 */}
+        <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center p-4">
+          <div className="max-w-2xl w-full bg-white rounded-xl shadow-md border border-[#E2E8F0] p-8">
+            {/* Error icon */}
             <div className="flex justify-center mb-6">
-              <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center">
-                <AlertTriangle className="w-10 h-10 text-red-600" />
+              <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center">
+                <AlertTriangle className="w-10 h-10 text-[#EF4444]" />
               </div>
             </div>
 
-            {/* 错误标题 */}
-            <h1 className="text-2xl font-bold text-gray-900 text-center mb-4">
+            {/* Error title */}
+            <h1 className="text-2xl font-bold text-[#0F172A] text-center mb-4">
               Oops! Something went wrong
             </h1>
 
-            {/* 错误描述 */}
-            <p className="text-gray-600 text-center mb-6">
+            {/* Error description */}
+            <p className="text-[#64748B] text-center mb-6">
               We're sorry for the inconvenience. The application encountered an unexpected error.
             </p>
 
-            {/* 错误详情（开发环境） */}
+            {/* Error details (development) */}
             {process.env.NODE_ENV === 'development' && this.state.error && (
               <details className="mb-6">
-                <summary className="cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-900 mb-2">
+                <summary className="cursor-pointer text-sm font-medium text-[#64748B] hover:text-[#0F172A] mb-2">
                   View error details (Development only)
                 </summary>
                 <div className="bg-red-50 border border-red-200 rounded-lg p-4">
@@ -109,11 +104,11 @@ class ErrorBoundary extends React.Component {
               </details>
             )}
 
-            {/* 操作按钮 */}
+            {/* Action buttons */}
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <button
                 onClick={this.handleReset}
-                className="flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+                className="flex items-center justify-center gap-2 px-6 py-3 bg-[#6366F1] hover:bg-indigo-600 active:bg-indigo-700 text-white rounded-lg font-medium transition-all duration-200 hover:shadow-md"
               >
                 <RefreshCw className="w-4 h-4" />
                 Try Again
@@ -121,17 +116,17 @@ class ErrorBoundary extends React.Component {
 
               <button
                 onClick={this.handleReload}
-                className="flex items-center justify-center gap-2 px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg font-medium transition-colors"
+                className="flex items-center justify-center gap-2 px-6 py-3 bg-slate-100 hover:bg-slate-200 text-[#0F172A] rounded-lg font-medium transition-all duration-200 border border-[#E2E8F0]"
               >
                 <Home className="w-4 h-4" />
                 Reload Page
               </button>
             </div>
 
-            {/* 频繁错误警告 */}
+            {/* Frequent error warning */}
             {this.state.errorCount >= 3 && (
-              <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                <p className="text-sm text-yellow-800">
+              <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                <p className="text-sm text-[#0F172A]">
                   <strong>⚠️ Multiple errors detected.</strong> If the problem persists, please try refreshing your browser or clearing the cache.
                 </p>
               </div>
@@ -148,7 +143,7 @@ class ErrorBoundary extends React.Component {
 export default ErrorBoundary;
 
 /**
- * withErrorBoundary - 高阶组件，为任何组件添加错误边界
+ * withErrorBoundary - HOC to wrap any component with error boundary
  */
 export function withErrorBoundary(Component, errorBoundaryProps = {}) {
   return function WithErrorBoundaryComponent(props) {

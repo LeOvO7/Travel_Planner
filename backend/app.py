@@ -4,11 +4,15 @@ Provides SSE (Server-Sent Events) streaming interface for real-time updates
 """
 import os
 import sys
+import re
 import json
 import asyncio
 from datetime import datetime
 from typing import Optional
 from contextlib import asynccontextmanager
+
+from dotenv import load_dotenv
+load_dotenv()
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -17,13 +21,14 @@ from pydantic import BaseModel
 
 # Import core logic from parent directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from travel_agent import app as langgraph_app, tools
+from travel_agent import app as langgraph_app, tools, SYSTEM_PROMPT
 
 # -----------------------------------
 # Pydantic Models
 # -----------------------------------
 
 class TravelRequest(BaseModel):
+    departure: Optional[str] = ''
     destination: str
     travel_dates: str
 
@@ -94,11 +99,12 @@ def check_api_keys() -> dict:
     """Check if required API keys are configured"""
     return {
         "openweather": bool(os.environ.get("OPENWEATHER_API_KEY")),
-        "openai": bool(os.environ.get("OPENAI_API_KEY"))
+        "openai": bool(os.environ.get("OPENAI_API_KEY")),
+        "rapidapi": bool(os.environ.get("RAPIDAPI_KEY")),
     }
 
 
-async def stream_agent_execution(destination: str, travel_dates: str):
+async def stream_agent_execution(departure: str, destination: str, travel_dates: str):
     """
     Execute the LangGraph agent and yield SSE-formatted events
 
@@ -123,27 +129,79 @@ async def stream_agent_execution(destination: str, travel_dates: str):
     yield f"event: status\ndata: {json.dumps({'message': 'Initializing AI agent...'})}\n\n"
     await asyncio.sleep(0.1)
 
-    # Construct the prompt
+    # Construct the prompt (mirrors travel_agent.py)
+    departure_info = f" from {departure}" if departure else ""
     initial_prompt = (
-        f"I am traveling to {destination} on {travel_dates}. "
-        "Please check the weather forecast for that location using the available tool. "
-        "Based STRICTLY on the weather conditions and summary provided by the tool, generate a travel guide including:\n"
-        "1. Clothing Recommendations (based on temperature and conditions).\n"
-        "2. Packing Essentials (e.g., umbrella, sunscreen, specific gear).\n"
-        "3. Activity Recommendations (3 specific activities suitable for the weather).\n\n"
-        "Please provide the response in English, acting as a helpful local guide."
+        f"I am traveling{departure_info} to {destination} on {travel_dates}.\n\n"
+        "Please gather real-time data using the available tools, then produce a complete travel guide.\n\n"
+        "**Data gathering** (use tools in parallel where possible):\n"
+        "1. Use `get_weather_forecast` to get the weather forecast for the destination.\n"
+        "2. Use `search_hotels` to find available hotels with real prices.\n"
+        "3. Use `search_restaurants` to find top-rated dining options.\n"
+        "4. Use `search_attractions` to find popular things to do.\n"
+        f"5. {'Use `search_flights` to find flights from ' + departure + ' to ' + destination + '.' if departure else 'If a departure city is obvious from context, use `search_flights` to find flights.'}\n\n"
+        "**Output structure** — base ALL recommendations on the real data returned:\n\n"
+        "## Daily Itinerary\n"
+        f"You MUST provide a full-day plan for EVERY day of the trip ({travel_dates}). "
+        "Do NOT skip any day. If weather forecast data is not available for some days, "
+        "extrapolate from the closest available forecast and note it.\n"
+        "For EACH day, provide:\n"
+        "- **Weather Summary**: Quote the key data (high/low temp, condition).\n"
+        "- **Sightseeing Route**: List 3-4 specific attractions from search results in a geographically logical order. "
+        "For each spot, note why it suits the day's weather and how to get to the next one.\n"
+        "- **Meals**: Recommend specific restaurants from search results near the day's route for lunch and dinner. "
+        "Include ratings and price level.\n"
+        "- **Outfit Plan**: What to wear for the day based on the temperature range and conditions.\n"
+        "- **Accommodation**: Recommend a specific hotel from search results, including price and rating. "
+        "Prefer hotels in areas convenient for the next day's itinerary.\n\n"
+        "## Flights & Transportation\n"
+        "- If flight data was retrieved, list the best options with price and duration.\n"
+        "- How to get from the airport/station to the city center.\n"
+        "- Recommended transit method for sightseeing (metro, bus, taxi, walking) based on weather and distances.\n"
+        "- Any travel passes or apps that are useful.\n\n"
+        "## Hotel Recommendations\n"
+        "- Summarize the top 3 hotel picks from search results with prices, ratings, and area.\n\n"
+        "## Packing Checklist\n"
+        "A consolidated, categorized list:\n"
+        "- Weather protection (rain/sun/wind gear)\n"
+        "- Clothing essentials (with quantities based on trip length)\n"
+        "- Health & comfort (sunscreen SPF level, hydration advice, etc.)\n\n"
+        "## Practical Tips\n"
+        "- Local food/drink specialties worth trying given the weather.\n"
+        "- Any weather-related safety warnings or cultural tips.\n\n"
+        "Format the output clearly with markdown headers and bullet points."
     )
 
     yield f"event: status\ndata: {json.dumps({'message': f'Planning trip to {destination}...'})}\n\n"
     await asyncio.sleep(0.1)
 
-    # Prepare inputs
-    from langchain_core.messages import HumanMessage, AIMessage
-    inputs = {"messages": [HumanMessage(content=initial_prompt)]}
+    # Prepare inputs with system prompt
+    from langchain_core.messages import HumanMessage, AIMessage, SystemMessage, ToolMessage
+    inputs = {"messages": [SystemMessage(content=SYSTEM_PROMPT), HumanMessage(content=initial_prompt)]}
+
+    # Accumulate structured data from tool responses
+    structured_data = []
+    seen_tool_ids = set()
+    STRUCTURED_PATTERN = re.compile(r'<!--STRUCTURED_DATA:(.*?)-->')
 
     try:
         # Stream through the LangGraph workflow
         for event in langgraph_app.stream(inputs, stream_mode="values"):
+            # Extract structured data from any new ToolMessages
+            for msg in event["messages"]:
+                if isinstance(msg, ToolMessage) and msg.content:
+                    msg_id = msg.id or id(msg)
+                    if msg_id in seen_tool_ids:
+                        continue
+                    seen_tool_ids.add(msg_id)
+                    matches = STRUCTURED_PATTERN.findall(msg.content)
+                    for match in matches:
+                        try:
+                            parsed = json.loads(match)
+                            structured_data.append(parsed)
+                        except json.JSONDecodeError:
+                            pass
+
             message = event["messages"][-1]
 
             # Tool call event
@@ -159,7 +217,7 @@ async def stream_agent_execution(destination: str, travel_dates: str):
                 yield f"event: status\ndata: {json.dumps({'message': 'Generating travel guide...'})}\n\n"
                 await asyncio.sleep(0.1)
 
-                yield f"event: result\ndata: {json.dumps({'content': message.content})}\n\n"
+                yield f"event: result\ndata: {json.dumps({'content': message.content, 'structured_data': structured_data})}\n\n"
                 await asyncio.sleep(0.1)
 
         # Send completion signal
@@ -224,7 +282,7 @@ async def travel_stream(request: TravelRequest):
         raise HTTPException(status_code=400, detail="destination and travel_dates are required")
 
     return StreamingResponse(
-        stream_agent_execution(request.destination, request.travel_dates),
+        stream_agent_execution(request.departure or '', request.destination, request.travel_dates),
         media_type="text/event-stream",
         headers={
             "Cache-Control": "no-cache",

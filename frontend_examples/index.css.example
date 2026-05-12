@@ -3,16 +3,24 @@
 @tailwind utilities;
 
 /* =====================================================
-   自定义样式 - Smart Travel Planner
+   Custom Styles - Smart Travel Planner
+   Color System:
+   - Background: #F8FAFC (slate-50)
+   - Surface/Cards: #FFFFFF (white)
+   - Primary/Accent: #6366F1 (indigo-500)
+   - Text Primary: #0F172A (slate-900)
+   - Text Secondary: #64748B (slate-500)
+   - Borders: #E2E8F0 (slate-200)
+   - Success: #10B981 | Error: #EF4444 | Warning: #F59E0B | Info: #3B82F6
    ===================================================== */
 
-/* 全局样式 */
+/* Global Styles */
 @layer base {
   body {
-    @apply bg-gray-50 text-gray-900 antialiased;
+    @apply bg-[#F8FAFC] text-[#0F172A] antialiased;
   }
 
-  /* 自定义滚动条 */
+  /* Custom scrollbar */
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -23,7 +31,7 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #CBD5E1;
+    background: #E2E8F0;
     border-radius: 4px;
   }
 
@@ -31,68 +39,73 @@
     background: #94A3B8;
   }
 
-  /* 代码块样式 */
+  /* Inline code */
   code {
-    @apply px-1.5 py-0.5 bg-gray-100 rounded text-sm font-mono;
+    @apply px-1.5 py-0.5 bg-slate-100 rounded text-sm font-mono;
   }
 
-  /* kbd 标签样式 */
+  /* Keyboard key */
   kbd {
-    @apply px-2 py-1 bg-gray-100 border border-gray-300 rounded text-xs font-semibold shadow-sm;
+    @apply px-2 py-1 bg-slate-100 border border-[#E2E8F0] rounded text-xs font-semibold shadow-sm;
   }
 }
 
-/* 自定义组件样式 */
+/* Component Styles */
 @layer components {
-  /* 消息气泡阴影 */
+  /* Message bubble */
   .message-bubble {
-    @apply shadow-sm hover:shadow-md transition-shadow;
+    @apply shadow-sm hover:shadow-md transition-shadow duration-200;
   }
 
-  /* 侧边栏项目悬停效果 */
+  /* Sidebar item hover */
   .sidebar-item {
-    @apply transition-all duration-200 hover:bg-gray-800/50 rounded-lg;
+    @apply transition-all duration-200 hover:bg-slate-800/50 rounded-lg;
   }
 
-  /* 输入框焦点效果 */
+  /* Input focus ring */
   .input-focus {
-    @apply focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none;
+    @apply focus:ring-2 focus:ring-[#6366F1] focus:border-transparent outline-none;
   }
 
-  /* 按钮通用样式 */
+  /* Primary button */
   .btn-primary {
-    @apply px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg
-           font-medium transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed;
+    @apply px-4 py-2 bg-[#6366F1] hover:bg-indigo-600 active:bg-indigo-700 text-white rounded-lg
+           font-medium transition-all duration-200
+           disabled:bg-slate-300 disabled:cursor-not-allowed
+           hover:shadow-md;
   }
 
+  /* Secondary button */
   .btn-secondary {
-    @apply px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg
-           font-medium transition-colors;
+    @apply px-4 py-2 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-[#0F172A] rounded-lg
+           font-medium transition-all duration-200
+           border border-[#E2E8F0] hover:border-slate-300;
   }
 
-  /* 卡片样式 */
+  /* Card */
   .card {
-    @apply bg-white rounded-lg shadow-sm border border-gray-200 p-4;
+    @apply bg-white rounded-xl shadow-sm border border-[#E2E8F0] p-5
+           hover:shadow-md transition-shadow duration-200;
   }
 }
 
-/* 工具类 */
+/* Utilities */
 @layer utilities {
-  /* 渐变背景 */
+  /* Gradient backgrounds */
   .gradient-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #6366F1 0%, #818CF8 100%);
   }
 
   .gradient-secondary {
-    background: linear-gradient(135deg, #667eea 0%, #f093fb 100%);
+    background: linear-gradient(135deg, #6366F1 0%, #A78BFA 100%);
   }
 
-  /* 文本渐变 */
+  /* Text gradient */
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-violet-500;
   }
 
-  /* 隐藏滚动条但保持滚动功能 */
+  /* Hide scrollbar but keep scrolling */
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -102,7 +115,7 @@
     display: none;
   }
 
-  /* 细滚动条 */
+  /* Thin scrollbar */
   .scrollbar-thin {
     scrollbar-width: thin;
   }
@@ -112,18 +125,18 @@
     height: 6px;
   }
 
-  /* 玻璃态效果（可选） */
+  /* Glass effect */
   .glass {
     @apply bg-white/80 backdrop-blur-lg border border-white/20;
   }
 
-  /* 悬停提升效果 */
+  /* Hover lift effect */
   .hover-lift {
-    @apply transition-transform hover:-translate-y-1;
+    @apply transition-all duration-200 hover:-translate-y-1 hover:shadow-md;
   }
 }
 
-/* 自定义动画 */
+/* Custom Animations */
 @keyframes shimmer {
   0% {
     background-position: -1000px 0;
@@ -137,15 +150,15 @@
   animation: shimmer 2s infinite linear;
   background: linear-gradient(
     to right,
-    #f6f7f8 0%,
-    #edeef1 20%,
-    #f6f7f8 40%,
-    #f6f7f8 100%
+    #F8FAFC 0%,
+    #E2E8F0 20%,
+    #F8FAFC 40%,
+    #F8FAFC 100%
   );
   background-size: 1000px 100%;
 }
 
-/* 打字机效果（可选，用于流式文本） */
+/* Typing animation */
 @keyframes typing {
   from {
     width: 0;
@@ -168,9 +181,8 @@
   animation: typing 3.5s steps(40, end), blink 0.75s step-end infinite;
 }
 
-/* 响应式工具 */
+/* Responsive utilities */
 @media (max-width: 768px) {
-  /* 移动端优化 */
   .mobile-full {
     @apply w-full;
   }
@@ -180,17 +192,7 @@
   }
 }
 
-/* 深色模式支持（可选） */
-@media (prefers-color-scheme: dark) {
-  /* 如果需要支持系统深色模式，在这里添加样式 */
-  /*
-  .dark-mode {
-    @apply bg-gray-900 text-white;
-  }
-  */
-}
-
-/* 打印样式（可选） */
+/* Print styles */
 @media print {
   .no-print {
     display: none !important;

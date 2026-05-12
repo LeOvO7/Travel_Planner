@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { Send, MapPin, Calendar, Loader2, AlertCircle } from 'lucide-react';
 
 /**
- * useDebouncedValue - 防抖 Hook
+ * useDebouncedValue
  */
 function useDebouncedValue(value, delay = 500) {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -21,22 +21,14 @@ function useDebouncedValue(value, delay = 500) {
 }
 
 /**
- * ChatInput-Enhanced - 增强版输入框
- *
- * 新增功能：
- * - 防抖处理
- * - 防重复提交
- * - 提交冷却时间
- * - 输入验证
- * - 字符计数
- * - 错误提示
+ * ChatInput-Enhanced
  */
 export default function ChatInputEnhanced({
   onSubmit,
   isLoading = false,
-  minCooldown = 2000, // 最小提交间隔（毫秒）
-  maxLength = 1000,   // 最大输入长度
-  required = ['destination'], // 必填字段
+  minCooldown = 2000,
+  maxLength = 1000,
+  required = ['destination'],
 }) {
   const [destination, setDestination] = useState('');
   const [dates, setDates] = useState('');
@@ -50,11 +42,10 @@ export default function ChatInputEnhanced({
   const lastSubmitTimeRef = useRef(0);
   const cooldownIntervalRef = useRef(null);
 
-  // 防抖的输入值（用于验证）
   const debouncedDestination = useDebouncedValue(destination, 300);
   const debouncedMessage = useDebouncedValue(message, 300);
 
-  // 自动调整 textarea 高度
+  // Auto-resize textarea
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
@@ -62,7 +53,7 @@ export default function ChatInputEnhanced({
     }
   }, [message]);
 
-  // 验证输入
+  // Validate inputs
   useEffect(() => {
     const newErrors = {};
 
@@ -77,7 +68,7 @@ export default function ChatInputEnhanced({
     setErrors(newErrors);
   }, [debouncedDestination, debouncedMessage, required, maxLength]);
 
-  // 检查冷却时间
+  // Check cooldown
   const checkCooldown = useCallback(() => {
     const now = Date.now();
     const timeSinceLastSubmit = now - lastSubmitTimeRef.current;
@@ -86,7 +77,6 @@ export default function ChatInputEnhanced({
       const remaining = minCooldown - timeSinceLastSubmit;
       setCooldownRemaining(remaining);
 
-      // 启动倒计时
       if (!cooldownIntervalRef.current) {
         cooldownIntervalRef.current = setInterval(() => {
           const newRemaining = minCooldown - (Date.now() - lastSubmitTimeRef.current);
@@ -106,11 +96,10 @@ export default function ChatInputEnhanced({
     return true;
   }, [minCooldown]);
 
-  // 验证表单
+  // Validate form
   const validate = useCallback(() => {
     const validationErrors = {};
 
-    // 检查必填字段
     if (required.includes('destination') && !destination.trim()) {
       validationErrors.destination = 'Destination is required';
     }
@@ -119,7 +108,6 @@ export default function ChatInputEnhanced({
       validationErrors.dates = 'Travel dates are required';
     }
 
-    // 检查长度
     if (destination.length < 2) {
       validationErrors.destination = 'Destination too short';
     }
@@ -132,23 +120,20 @@ export default function ChatInputEnhanced({
     return Object.keys(validationErrors).length === 0;
   }, [destination, dates, message, required, maxLength]);
 
-  // 处理提交
+  // Handle submit
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
 
-    // 防止重复提交
     if (isLoading || isSubmitting) {
       console.warn('Submit already in progress');
       return;
     }
 
-    // 检查冷却时间
     if (!checkCooldown()) {
       console.warn(`Please wait ${Math.ceil(cooldownRemaining / 1000)}s before submitting again`);
       return;
     }
 
-    // 验证输入
     if (!validate()) {
       console.warn('Validation failed', errors);
       return;
@@ -165,11 +150,9 @@ export default function ChatInputEnhanced({
 
       await onSubmit(data);
 
-      // 记录提交时间
       lastSubmitTimeRef.current = Date.now();
       setSubmitCount(prev => prev + 1);
 
-      // 清空输入
       setDestination('');
       setDates('');
       setMessage('');
@@ -183,16 +166,15 @@ export default function ChatInputEnhanced({
     }
   }, [destination, dates, message, isLoading, isSubmitting, cooldownRemaining, checkCooldown, validate, onSubmit]);
 
-  // 快捷键
+  // Keyboard shortcut
   const handleKeyDown = (e) => {
-    // Ctrl/Cmd + Enter 发送
     if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
       e.preventDefault();
       handleSubmit(e);
     }
   };
 
-  // 清理定时器
+  // Cleanup timers
   useEffect(() => {
     return () => {
       if (cooldownIntervalRef.current) {
@@ -205,15 +187,15 @@ export default function ChatInputEnhanced({
   const canSubmit = isFormValid && !isLoading && !isSubmitting && cooldownRemaining === 0;
 
   return (
-    <div className="border-t border-gray-200 bg-white">
-      <div className="max-w-4xl mx-auto p-4">
+    <div className="border-t border-[#E2E8F0] bg-white">
+      <div className="max-w-4xl mx-auto p-5">
         <form onSubmit={handleSubmit} className="space-y-3">
-          {/* 目的地和日期输入 */}
+          {/* Destination and dates inputs */}
           <div className="grid md:grid-cols-2 gap-3">
-            {/* 目的地 */}
+            {/* Destination */}
             <div>
               <div className="relative">
-                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#64748B] pointer-events-none" />
                 <input
                   type="text"
                   value={destination}
@@ -222,25 +204,25 @@ export default function ChatInputEnhanced({
                   disabled={isLoading || isSubmitting}
                   className={`
                     w-full pl-10 pr-4 py-2.5 border rounded-lg
-                    focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                    outline-none transition-all disabled:bg-gray-50 disabled:text-gray-500
-                    text-sm
-                    ${errors.destination ? 'border-red-300 bg-red-50' : 'border-gray-300'}
+                    focus:ring-2 focus:ring-[#6366F1] focus:border-transparent
+                    outline-none transition-all disabled:bg-slate-50 disabled:text-[#64748B]
+                    text-sm text-[#0F172A] placeholder:text-[#64748B]
+                    ${errors.destination ? 'border-[#EF4444]/50 bg-red-50' : 'border-[#E2E8F0]'}
                   `}
                 />
               </div>
               {errors.destination && (
-                <p className="text-xs text-red-600 mt-1 flex items-center gap-1">
+                <p className="text-xs text-[#EF4444] mt-1 flex items-center gap-1">
                   <AlertCircle className="w-3 h-3" />
                   {errors.destination}
                 </p>
               )}
             </div>
 
-            {/* 旅行日期 */}
+            {/* Travel dates */}
             <div>
               <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#64748B] pointer-events-none" />
                 <input
                   type="text"
                   value={dates}
@@ -249,15 +231,15 @@ export default function ChatInputEnhanced({
                   disabled={isLoading || isSubmitting}
                   className={`
                     w-full pl-10 pr-4 py-2.5 border rounded-lg
-                    focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                    outline-none transition-all disabled:bg-gray-50 disabled:text-gray-500
-                    text-sm
-                    ${errors.dates ? 'border-red-300 bg-red-50' : 'border-gray-300'}
+                    focus:ring-2 focus:ring-[#6366F1] focus:border-transparent
+                    outline-none transition-all disabled:bg-slate-50 disabled:text-[#64748B]
+                    text-sm text-[#0F172A] placeholder:text-[#64748B]
+                    ${errors.dates ? 'border-[#EF4444]/50 bg-red-50' : 'border-[#E2E8F0]'}
                   `}
                 />
               </div>
               {errors.dates && (
-                <p className="text-xs text-red-600 mt-1 flex items-center gap-1">
+                <p className="text-xs text-[#EF4444] mt-1 flex items-center gap-1">
                   <AlertCircle className="w-3 h-3" />
                   {errors.dates}
                 </p>
@@ -265,7 +247,7 @@ export default function ChatInputEnhanced({
             </div>
           </div>
 
-          {/* 多行消息输入 */}
+          {/* Textarea message input */}
           <div>
             <div className="relative">
               <textarea
@@ -279,21 +261,21 @@ export default function ChatInputEnhanced({
                 maxLength={maxLength}
                 className={`
                   w-full px-4 py-3 pr-12 border rounded-lg
-                  focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                  focus:ring-2 focus:ring-[#6366F1] focus:border-transparent
                   outline-none transition-all resize-none
-                  disabled:bg-gray-50 disabled:text-gray-500
-                  text-sm min-h-[44px] max-h-32 overflow-y-auto
-                  ${errors.message ? 'border-red-300 bg-red-50' : 'border-gray-300'}
+                  disabled:bg-slate-50 disabled:text-[#64748B]
+                  text-sm text-[#0F172A] placeholder:text-[#64748B] min-h-[44px] max-h-32 overflow-y-auto
+                  ${errors.message ? 'border-[#EF4444]/50 bg-red-50' : 'border-[#E2E8F0]'}
                 `}
               />
 
-              {/* 发送按钮 */}
+              {/* Send button */}
               <button
                 type="submit"
                 disabled={!canSubmit}
                 className="absolute right-2 bottom-2 p-2 rounded-lg
-                         bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300
-                         text-white transition-colors group"
+                         bg-[#6366F1] hover:bg-indigo-600 active:bg-indigo-700 disabled:bg-slate-300
+                         text-white transition-all duration-200 group hover:shadow-md"
                 title={
                   cooldownRemaining > 0
                     ? `Please wait ${Math.ceil(cooldownRemaining / 1000)}s`
@@ -310,55 +292,55 @@ export default function ChatInputEnhanced({
               </button>
             </div>
 
-            {/* 字符计数 */}
+            {/* Character count */}
             {message.length > 0 && (
               <div className="flex justify-between items-center mt-1 text-xs">
-                <span className={message.length > maxLength ? 'text-red-600' : 'text-gray-500'}>
+                <span className={message.length > maxLength ? 'text-[#EF4444]' : 'text-[#64748B]'}>
                   {message.length} / {maxLength} characters
                 </span>
               </div>
             )}
 
             {errors.message && (
-              <p className="text-xs text-red-600 mt-1 flex items-center gap-1">
+              <p className="text-xs text-[#EF4444] mt-1 flex items-center gap-1">
                 <AlertCircle className="w-3 h-3" />
                 {errors.message}
               </p>
             )}
           </div>
 
-          {/* 提示文本 */}
-          <div className="flex items-center justify-between text-xs text-gray-500">
+          {/* Hint text */}
+          <div className="flex items-center justify-between text-xs text-[#64748B]">
             <div className="flex items-center gap-2">
               {isFormValid ? (
-                <span className="text-green-600">✓ Ready to send</span>
+                <span className="text-[#10B981]">✓ Ready to send</span>
               ) : (
-                <span className="text-amber-600">⚠ Fill in destination</span>
+                <span className="text-[#F59E0B]">⚠ Fill in destination</span>
               )}
 
               {cooldownRemaining > 0 && (
-                <span className="text-amber-600">
+                <span className="text-[#F59E0B]">
                   • Cooldown: {Math.ceil(cooldownRemaining / 1000)}s
                 </span>
               )}
 
               {submitCount > 0 && (
-                <span className="text-gray-400">
+                <span className="text-[#64748B]">
                   • Sent: {submitCount}
                 </span>
               )}
             </div>
 
             <span className="hidden sm:inline">
-              Press <kbd className="px-1.5 py-0.5 bg-gray-100 rounded border border-gray-300">Ctrl</kbd> +
-              <kbd className="px-1.5 py-0.5 bg-gray-100 rounded border border-gray-300 ml-1">Enter</kbd> to send
+              Press <kbd className="px-1.5 py-0.5 bg-slate-100 rounded border border-[#E2E8F0]">Ctrl</kbd> +
+              <kbd className="px-1.5 py-0.5 bg-slate-100 rounded border border-[#E2E8F0] ml-1">Enter</kbd> to send
             </span>
           </div>
 
-          {/* 提交错误 */}
+          {/* Submit error */}
           {errors.submit && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-sm text-red-700 flex items-center gap-2">
+            <div className="p-3 bg-red-50 border border-[#EF4444]/30 rounded-lg">
+              <p className="text-sm text-[#EF4444] flex items-center gap-2">
                 <AlertCircle className="w-4 h-4" />
                 {errors.submit}
               </p>

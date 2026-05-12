@@ -7,32 +7,23 @@ import ChatInput from './components/ChatInput';
 const API_URL = 'http://localhost:8000/api/travel/stream';
 
 /**
- * Main App Component - 智能旅行规划助手
- * 左右分栏布局，支持多会话管理和流式响应
+ * Main App Component
  */
 export default function App() {
-  // 侧边栏状态
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-
-  // 会话管理
   const [sessions, setSessions] = useState([]);
   const [currentSessionId, setCurrentSessionId] = useState(null);
-
-  // 消息和加载状态
   const [isStreaming, setIsStreaming] = useState(false);
   const messagesEndRef = useRef(null);
 
-  // 初始化：创建第一个会话
   useEffect(() => {
     if (sessions.length === 0) {
       createNewSession();
     }
   }, []);
 
-  // 获取当前会话
   const currentSession = sessions.find(s => s.id === currentSessionId);
 
-  // 创建新会话
   const createNewSession = () => {
     const newSession = {
       id: Date.now().toString(),
@@ -44,12 +35,10 @@ export default function App() {
     setCurrentSessionId(newSession.id);
   };
 
-  // 切换会话
   const selectSession = (sessionId) => {
     setCurrentSessionId(sessionId);
   };
 
-  // 删除会话
   const deleteSession = (sessionId) => {
     setSessions(prev => prev.filter(s => s.id !== sessionId));
     if (currentSessionId === sessionId) {
@@ -62,7 +51,6 @@ export default function App() {
     }
   };
 
-  // 添加消息到当前会话
   const addMessage = (message) => {
     setSessions(prev => prev.map(session => {
       if (session.id === currentSessionId) {
@@ -75,7 +63,6 @@ export default function App() {
     }));
   };
 
-  // 更新会话标题
   const updateSessionTitle = (sessionId, title) => {
     setSessions(prev => prev.map(session => {
       if (session.id === sessionId) {
@@ -85,11 +72,9 @@ export default function App() {
     }));
   };
 
-  // 处理表单提交
   const handleSubmit = async (data) => {
     if (!currentSessionId) return;
 
-    // 添加用户消息
     const userMessage = {
       type: 'user',
       content: data.message || `Plan a trip to ${data.destination}`,
@@ -100,12 +85,10 @@ export default function App() {
     };
     addMessage(userMessage);
 
-    // 更新会话标题（如果是新会话）
     if (currentSession.title === 'New Trip') {
       updateSessionTitle(currentSessionId, `Trip to ${data.destination}`);
     }
 
-    // 开始流式请求
     setIsStreaming(true);
 
     try {
@@ -120,7 +103,6 @@ export default function App() {
     }
   };
 
-  // SSE 流式请求
   const streamTravelPlan = async (destination, travelDates) => {
     const response = await fetch(API_URL, {
       method: 'POST',
@@ -159,36 +141,18 @@ export default function App() {
 
           switch (eventType) {
             case 'status':
-              addMessage({
-                type: 'status',
-                content: data.message
-              });
+              addMessage({ type: 'status', content: data.message });
               break;
-
             case 'tool_call':
-              addMessage({
-                type: 'tool_call',
-                tool: data.tool,
-                args: data.args
-              });
+              addMessage({ type: 'tool_call', tool: data.tool, args: data.args });
               break;
-
             case 'result':
-              addMessage({
-                type: 'assistant',
-                content: data.content
-              });
+              addMessage({ type: 'assistant', content: data.content });
               break;
-
             case 'error':
-              addMessage({
-                type: 'error',
-                content: data.error
-              });
+              addMessage({ type: 'error', content: data.error });
               break;
-
             case 'done':
-              // 可以添加完成提示
               break;
           }
         }
@@ -197,8 +161,8 @@ export default function App() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden">
-      {/* 侧边栏 */}
+    <div className="flex h-screen bg-[#F8FAFC] overflow-hidden">
+      {/* Sidebar */}
       <Sidebar
         isOpen={isSidebarOpen}
         onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -209,32 +173,32 @@ export default function App() {
         onDeleteSession={deleteSession}
       />
 
-      {/* 主聊天区域 */}
+      {/* Main chat area */}
       <div
         className={`
           flex-1 flex flex-col transition-all duration-300
           ${isSidebarOpen ? 'ml-64' : 'ml-0'}
         `}
       >
-        {/* 顶部标题栏 */}
-        <div className="bg-white border-b border-gray-200 px-6 py-4">
+        {/* Top header bar */}
+        <div className="bg-white border-b border-[#E2E8F0] px-6 py-4 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-[#6366F1] flex items-center justify-center shadow-sm">
               <Plane className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="text-lg font-semibold text-gray-900">
+              <h1 className="text-lg font-semibold text-[#0F172A]">
                 {currentSession?.title || 'Smart Travel Planner'}
               </h1>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-[#64748B]">
                 AI-powered travel planning with real-time insights
               </p>
             </div>
           </div>
         </div>
 
-        {/* 消息列表区域 */}
-        <div className="flex-1 overflow-y-auto px-6 py-6">
+        {/* Message list area */}
+        <div className="flex-1 overflow-y-auto px-6 py-8">
           <div className="max-w-4xl mx-auto">
             {currentSession?.messages.length === 0 ? (
               <EmptyState />
@@ -247,27 +211,26 @@ export default function App() {
           </div>
         </div>
 
-        {/* 输入框 */}
+        {/* Input area */}
         <ChatInput onSubmit={handleSubmit} isLoading={isStreaming} />
       </div>
     </div>
   );
 }
 
-// 空状态组件
 function EmptyState() {
   return (
-    <div className="flex flex-col items-center justify-center h-full text-center py-12">
-      <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center mb-6">
-        <Sparkles className="w-10 h-10 text-blue-600" />
+    <div className="flex flex-col items-center justify-center h-full text-center py-16">
+      <div className="w-20 h-20 rounded-full bg-indigo-50 flex items-center justify-center mb-6">
+        <Sparkles className="w-10 h-10 text-[#6366F1]" />
       </div>
-      <h2 className="text-2xl font-semibold text-gray-800 mb-2">
+      <h2 className="text-2xl font-semibold text-[#0F172A] mb-3">
         Welcome to Smart Travel Planner
       </h2>
-      <p className="text-gray-600 mb-8 max-w-md">
+      <p className="text-[#64748B] mb-10 max-w-md leading-relaxed">
         Plan your perfect trip with AI-powered recommendations based on real-time weather data
       </p>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-2xl">
         <FeatureCard
           icon="🌤️"
           title="Weather Insights"
@@ -290,10 +253,10 @@ function EmptyState() {
 
 function FeatureCard({ icon, title, description }) {
   return (
-    <div className="bg-white rounded-xl p-4 border border-gray-200 hover:shadow-md transition-shadow">
-      <div className="text-3xl mb-2">{icon}</div>
-      <h3 className="font-semibold text-gray-800 mb-1">{title}</h3>
-      <p className="text-sm text-gray-600">{description}</p>
+    <div className="bg-white rounded-xl p-5 border border-[#E2E8F0] shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-1 cursor-default">
+      <div className="text-3xl mb-3">{icon}</div>
+      <h3 className="font-semibold text-[#0F172A] mb-1">{title}</h3>
+      <p className="text-sm text-[#64748B] leading-relaxed">{description}</p>
     </div>
   );
 }

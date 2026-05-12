@@ -15,7 +15,7 @@ export default function ChatInput({ onSubmit, isLoading }) {
   const textareaRef = useRef(null);
   const lastSubmitTimeRef = useRef(0);
 
-  const MIN_SUBMIT_INTERVAL = 2000; // 2s cooldown between submissions
+  const MIN_SUBMIT_INTERVAL = 2000;
 
   // Auto-resize textarea
   useEffect(() => {
@@ -28,14 +28,11 @@ export default function ChatInput({ onSubmit, isLoading }) {
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
 
-    // Guard: block if already loading or submitting
     if (isLoading || isSubmitting) return;
 
-    // Guard: enforce cooldown between submissions
     const now = Date.now();
     if (now - lastSubmitTimeRef.current < MIN_SUBMIT_INTERVAL) return;
 
-    // Validate
     if (!destination.trim()) return;
 
     setIsSubmitting(true);
@@ -50,7 +47,6 @@ export default function ChatInput({ onSubmit, isLoading }) {
       await onSubmit(data);
       lastSubmitTimeRef.current = Date.now();
 
-      // Clear inputs on success
       setDestination('');
       setDates('');
       setMessage('');
@@ -72,45 +68,45 @@ export default function ChatInput({ onSubmit, isLoading }) {
   const isFormValid = destination.trim().length > 0;
 
   return (
-    <div className="border-t border-gray-200 bg-white">
-      <div className="max-w-4xl mx-auto p-4">
+    <div className="border-t border-[#E2E8F0] bg-white">
+      <div className="max-w-4xl mx-auto p-5">
         <form onSubmit={handleSubmit} className="space-y-3">
-          {/* 目的地和日期输入 */}
+          {/* Destination and dates inputs */}
           <div className="grid md:grid-cols-2 gap-3">
-            {/* 目的地 */}
+            {/* Destination */}
             <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#64748B] pointer-events-none" />
               <input
                 type="text"
                 value={destination}
                 onChange={(e) => setDestination(e.target.value)}
                 placeholder="Destination (e.g., Tokyo, Paris)"
                 disabled={isBusy}
-                className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg
-                         focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                         outline-none transition-all disabled:bg-gray-50 disabled:text-gray-500
-                         text-sm"
+                className="w-full pl-10 pr-4 py-2.5 border border-[#E2E8F0] rounded-lg
+                         focus:ring-2 focus:ring-[#6366F1] focus:border-transparent
+                         outline-none transition-all disabled:bg-slate-50 disabled:text-[#64748B]
+                         text-sm text-[#0F172A] placeholder:text-[#64748B]"
               />
             </div>
 
-            {/* 旅行日期 */}
+            {/* Travel dates */}
             <div className="relative">
-              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#64748B] pointer-events-none" />
               <input
                 type="text"
                 value={dates}
                 onChange={(e) => setDates(e.target.value)}
                 placeholder="Travel dates (e.g., May 15-20, 2026)"
                 disabled={isBusy}
-                className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg
-                         focus:ring-2 focus:ring-blue-500 focus:border-transparent
-                         outline-none transition-all disabled:bg-gray-50 disabled:text-gray-500
-                         text-sm"
+                className="w-full pl-10 pr-4 py-2.5 border border-[#E2E8F0] rounded-lg
+                         focus:ring-2 focus:ring-[#6366F1] focus:border-transparent
+                         outline-none transition-all disabled:bg-slate-50 disabled:text-[#64748B]
+                         text-sm text-[#0F172A] placeholder:text-[#64748B]"
               />
             </div>
           </div>
 
-          {/* 多行消息输入 */}
+          {/* Textarea message input */}
           <div className="relative">
             <textarea
               ref={textareaRef}
@@ -120,20 +116,20 @@ export default function ChatInput({ onSubmit, isLoading }) {
               placeholder="Additional requirements or questions... (Optional)"
               disabled={isBusy}
               rows={1}
-              className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg
-                       focus:ring-2 focus:ring-blue-500 focus:border-transparent
+              className="w-full px-4 py-3 pr-12 border border-[#E2E8F0] rounded-lg
+                       focus:ring-2 focus:ring-[#6366F1] focus:border-transparent
                        outline-none transition-all resize-none
-                       disabled:bg-gray-50 disabled:text-gray-500
-                       text-sm min-h-[44px] max-h-32 overflow-y-auto"
+                       disabled:bg-slate-50 disabled:text-[#64748B]
+                       text-sm text-[#0F172A] placeholder:text-[#64748B] min-h-[44px] max-h-32 overflow-y-auto"
             />
 
-            {/* 发送按钮 */}
+            {/* Send button */}
             <button
               type="submit"
               disabled={isBusy || !isFormValid}
               className="absolute right-2 bottom-2 p-2 rounded-lg
-                       bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300
-                       text-white transition-colors group"
+                       bg-[#6366F1] hover:bg-indigo-600 active:bg-indigo-700 disabled:bg-slate-300
+                       text-white transition-all duration-200 group hover:shadow-md"
               title="Send (Ctrl/Cmd + Enter)"
             >
               {isBusy ? (
@@ -144,16 +140,16 @@ export default function ChatInput({ onSubmit, isLoading }) {
             </button>
           </div>
 
-          {/* 提示文本 */}
-          <div className="flex items-center justify-between text-xs text-gray-500">
+          {/* Hint text */}
+          <div className="flex items-center justify-between text-xs text-[#64748B]">
             <span>
               {isFormValid
                 ? '✓ Ready to plan your trip'
                 : '⚠ Destination is required'}
             </span>
             <span className="hidden sm:inline">
-              Press <kbd className="px-1.5 py-0.5 bg-gray-100 rounded border border-gray-300">Ctrl</kbd> +
-              <kbd className="px-1.5 py-0.5 bg-gray-100 rounded border border-gray-300 ml-1">Enter</kbd> to send
+              Press <kbd className="px-1.5 py-0.5 bg-slate-100 rounded border border-[#E2E8F0]">Ctrl</kbd> +
+              <kbd className="px-1.5 py-0.5 bg-slate-100 rounded border border-[#E2E8F0] ml-1">Enter</kbd> to send
             </span>
           </div>
         </form>

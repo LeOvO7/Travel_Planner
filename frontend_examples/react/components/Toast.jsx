@@ -18,7 +18,7 @@ export function useToast() {
 }
 
 /**
- * ToastProvider - Toast 通知提供者
+ * ToastProvider
  */
 export function ToastProvider({ children }) {
   const [toasts, setToasts] = useState([]);
@@ -34,7 +34,6 @@ export function ToastProvider({ children }) {
 
     setToasts(prev => [...prev, newToast]);
 
-    // 自动移除
     if (newToast.duration > 0) {
       setTimeout(() => {
         removeToast(id);
@@ -74,7 +73,7 @@ export function ToastProvider({ children }) {
 }
 
 /**
- * ToastContainer - Toast 容器
+ * ToastContainer
  */
 function ToastContainer({ toasts, onRemove }) {
   return (
@@ -91,43 +90,43 @@ function ToastContainer({ toasts, onRemove }) {
 }
 
 /**
- * ToastItem - 单个 Toast
+ * ToastItem
  */
 function ToastItem({ toast, onClose }) {
   const getToastStyles = () => {
     switch (toast.type) {
       case 'success':
         return {
-          bg: 'bg-green-50',
-          border: 'border-green-300',
+          bg: 'bg-emerald-50',
+          border: 'border-emerald-200',
           icon: CheckCircle,
-          iconColor: 'text-green-600',
-          textColor: 'text-green-900',
+          iconColor: 'text-[#10B981]',
+          textColor: 'text-[#0F172A]',
         };
       case 'error':
         return {
           bg: 'bg-red-50',
-          border: 'border-red-300',
+          border: 'border-red-200',
           icon: AlertCircle,
-          iconColor: 'text-red-600',
-          textColor: 'text-red-900',
+          iconColor: 'text-[#EF4444]',
+          textColor: 'text-[#0F172A]',
         };
       case 'warning':
         return {
-          bg: 'bg-yellow-50',
-          border: 'border-yellow-300',
+          bg: 'bg-amber-50',
+          border: 'border-amber-200',
           icon: AlertTriangle,
-          iconColor: 'text-yellow-600',
-          textColor: 'text-yellow-900',
+          iconColor: 'text-[#F59E0B]',
+          textColor: 'text-[#0F172A]',
         };
       case 'info':
       default:
         return {
           bg: 'bg-blue-50',
-          border: 'border-blue-300',
+          border: 'border-blue-200',
           icon: Info,
-          iconColor: 'text-blue-600',
-          textColor: 'text-blue-900',
+          iconColor: 'text-[#3B82F6]',
+          textColor: 'text-[#0F172A]',
         };
     }
   };
@@ -139,7 +138,7 @@ function ToastItem({ toast, onClose }) {
     <div
       className={`
         ${styles.bg} ${styles.border} border
-        rounded-lg shadow-lg p-4 min-w-[300px] max-w-md
+        rounded-xl shadow-lg p-4 min-w-[300px] max-w-md
         pointer-events-auto animate-slideInRight
       `}
     >
@@ -152,7 +151,7 @@ function ToastItem({ toast, onClose }) {
               {toast.title}
             </p>
           )}
-          <p className={`text-sm ${styles.textColor}`}>
+          <p className={`text-sm text-[#64748B]`}>
             {toast.message || toast.content}
           </p>
 
@@ -168,10 +167,10 @@ function ToastItem({ toast, onClose }) {
 
         <button
           onClick={onClose}
-          className={`flex-shrink-0 p-1 hover:bg-gray-200 rounded transition-colors`}
+          className="flex-shrink-0 p-1 hover:bg-slate-200 rounded transition-colors"
           aria-label="Close"
         >
-          <X className="w-4 h-4" />
+          <X className="w-4 h-4 text-[#64748B]" />
         </button>
       </div>
     </div>
@@ -179,7 +178,7 @@ function ToastItem({ toast, onClose }) {
 }
 
 /**
- * Alert Component - 警告框组件（用于消息列表中）
+ * Alert Component
  */
 export function Alert({
   type = 'info',
@@ -195,48 +194,48 @@ export function Alert({
     switch (type) {
       case 'success':
         return {
-          bg: 'bg-green-50',
-          border: 'border-green-300',
+          bg: 'bg-emerald-50',
+          border: 'border-emerald-200',
           icon: CheckCircle,
-          iconBg: 'bg-green-100',
-          iconColor: 'text-green-600',
-          titleColor: 'text-green-900',
-          textColor: 'text-green-700',
-          buttonBg: 'bg-green-600 hover:bg-green-700',
+          iconBg: 'bg-emerald-100',
+          iconColor: 'text-[#10B981]',
+          titleColor: 'text-[#0F172A]',
+          textColor: 'text-[#64748B]',
+          buttonBg: 'bg-[#10B981] hover:bg-emerald-600',
         };
       case 'error':
         return {
           bg: 'bg-red-50',
-          border: 'border-red-300',
+          border: 'border-red-200',
           icon: AlertCircle,
           iconBg: 'bg-red-100',
-          iconColor: 'text-red-600',
-          titleColor: 'text-red-900',
-          textColor: 'text-red-700',
-          buttonBg: 'bg-red-600 hover:bg-red-700',
+          iconColor: 'text-[#EF4444]',
+          titleColor: 'text-[#0F172A]',
+          textColor: 'text-[#64748B]',
+          buttonBg: 'bg-[#EF4444] hover:bg-red-600',
         };
       case 'warning':
         return {
-          bg: 'bg-yellow-50',
-          border: 'border-yellow-300',
+          bg: 'bg-amber-50',
+          border: 'border-amber-200',
           icon: AlertTriangle,
-          iconBg: 'bg-yellow-100',
-          iconColor: 'text-yellow-600',
-          titleColor: 'text-yellow-900',
-          textColor: 'text-yellow-700',
-          buttonBg: 'bg-yellow-600 hover:bg-yellow-700',
+          iconBg: 'bg-amber-100',
+          iconColor: 'text-[#F59E0B]',
+          titleColor: 'text-[#0F172A]',
+          textColor: 'text-[#64748B]',
+          buttonBg: 'bg-[#F59E0B] hover:bg-amber-600',
         };
       case 'info':
       default:
         return {
           bg: 'bg-blue-50',
-          border: 'border-blue-300',
+          border: 'border-blue-200',
           icon: Info,
           iconBg: 'bg-blue-100',
-          iconColor: 'text-blue-600',
-          titleColor: 'text-blue-900',
-          textColor: 'text-blue-700',
-          buttonBg: 'bg-blue-600 hover:bg-blue-700',
+          iconColor: 'text-[#3B82F6]',
+          titleColor: 'text-[#0F172A]',
+          textColor: 'text-[#64748B]',
+          buttonBg: 'bg-[#3B82F6] hover:bg-blue-600',
         };
     }
   };
@@ -245,7 +244,7 @@ export function Alert({
   const Icon = styles.icon;
 
   return (
-    <div className={`${styles.bg} ${styles.border} border-2 rounded-lg p-4 shadow-sm ${className}`}>
+    <div className={`${styles.bg} ${styles.border} border-2 rounded-xl p-4 shadow-sm ${className}`}>
       <div className="flex items-start gap-3">
         <div className={`flex-shrink-0 w-10 h-10 ${styles.iconBg} rounded-full flex items-center justify-center`}>
           <Icon className={`w-5 h-5 ${styles.iconColor}`} />
@@ -271,7 +270,7 @@ export function Alert({
           {onAction && (
             <button
               onClick={onAction}
-              className={`mt-3 px-4 py-2 ${styles.buttonBg} text-white rounded-lg text-sm font-medium transition-colors`}
+              className={`mt-3 px-4 py-2 ${styles.buttonBg} text-white rounded-lg text-sm font-medium transition-all duration-200 hover:shadow-md`}
             >
               {actionLabel}
             </button>
@@ -281,10 +280,10 @@ export function Alert({
         {onClose && (
           <button
             onClick={onClose}
-            className="flex-shrink-0 p-1 hover:bg-gray-200 rounded transition-colors"
+            className="flex-shrink-0 p-1 hover:bg-slate-200 rounded transition-colors"
             aria-label="Close"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5 text-[#64748B]" />
           </button>
         )}
       </div>
@@ -292,7 +291,7 @@ export function Alert({
   );
 }
 
-// CSS 动画
+// CSS animation
 export const toastStyles = `
 @keyframes slideInRight {
   from {

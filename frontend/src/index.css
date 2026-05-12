@@ -1,0 +1,243 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global Styles */
+@layer base {
+  body {
+    @apply bg-[#F8FAFC] text-[#0F172A] antialiased font-sans;
+    margin: 0;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #E2E8F0;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #94A3B8;
+  }
+
+  code {
+    @apply px-1.5 py-0.5 bg-slate-100 rounded text-sm font-mono;
+  }
+
+  kbd {
+    @apply px-2 py-1 bg-slate-100 border border-[#E2E8F0] rounded text-xs font-semibold font-mono shadow-sm;
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0.55;
+    cursor: pointer;
+  }
+}
+
+@layer components {
+  .message-bubble {
+    @apply shadow-sm hover:shadow-md transition-shadow duration-200;
+  }
+
+  .sidebar-item {
+    @apply transition-all duration-200 hover:bg-slate-800/50 rounded-lg;
+  }
+
+  .btn-primary {
+    @apply px-4 py-2 bg-[#6366F1] hover:bg-indigo-600 active:bg-indigo-700 text-white rounded-lg
+           font-medium transition-all duration-200
+           disabled:bg-slate-300 disabled:cursor-not-allowed
+           hover:shadow-md;
+  }
+
+  .btn-secondary {
+    @apply px-4 py-2 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-[#0F172A] rounded-lg
+           font-medium transition-all duration-200
+           border border-[#E2E8F0] hover:border-slate-300;
+  }
+
+  .card {
+    @apply bg-white rounded-xl shadow-sm border border-[#E2E8F0] p-5
+           hover:shadow-md transition-shadow duration-200;
+  }
+}
+
+@layer utilities {
+  .gradient-primary {
+    background: linear-gradient(135deg, #6366F1 0%, #818CF8 100%);
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-violet-500;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .hover-lift {
+    @apply transition-all duration-200 hover:-translate-y-1 hover:shadow-md;
+  }
+}
+
+/* Animations */
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite linear;
+  background: linear-gradient(to right, #F8FAFC 0%, #E2E8F0 20%, #F8FAFC 40%, #F8FAFC 100%);
+  background-size: 1000px 100%;
+}
+
+@keyframes bar {
+  0%, 100% { height: 40%; }
+  50% { height: 100%; }
+}
+
+.animate-bar {
+  animation: bar 1s ease-in-out infinite;
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.animate-slideInRight {
+  animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.animate-slideDown {
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* ===== Mobile responsive styles ===== */
+@media (max-width: 768px) {
+  /* Hide sidebar on mobile — use bottom tab bar instead */
+  .md-sidebar-hide {
+    display: none !important;
+  }
+
+  /* Mobile bottom tab bar */
+  .mobile-tabbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #fff;
+    border-top: 1px solid #E2E8F0;
+    display: flex;
+    padding: 8px 4px calc(env(safe-area-inset-bottom, 0px) + 8px);
+    z-index: 50;
+  }
+
+  .mobile-tabbar button {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    font-size: 10.5px;
+    font-weight: 500;
+    color: #94A3B8;
+    padding: 6px 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  .mobile-tabbar button.active {
+    color: #6366F1;
+  }
+
+  /* Ensure content above bottom bar */
+  .mobile-content-pad {
+    padding-bottom: 80px;
+  }
+
+  /* Mobile chat bubbles */
+  .mobile-bubble {
+    border-radius: 14px;
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  /* Compact composer on mobile */
+  .mobile-composer .grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .mobile-composer input {
+    padding: 9px 12px 9px 30px;
+    font-size: 12px;
+    border-radius: 10px;
+  }
+
+  /* Mobile trip hero card */
+  .mobile-hero {
+    border-radius: 18px;
+    padding: 18px;
+  }
+
+  /* Mobile session cards */
+  .mobile-session-card {
+    background: #fff;
+    border: 1px solid #E2E8F0;
+    border-radius: 14px;
+    padding: 12px 14px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  /* New trip card gradient */
+  .mobile-new-trip {
+    background: linear-gradient(135deg, #6366F1, #818CF8);
+    color: #fff;
+    border-radius: 14px;
+    padding: 14px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    box-shadow: 0 6px 14px -4px rgba(99, 102, 241, 0.4);
+  }
+}
