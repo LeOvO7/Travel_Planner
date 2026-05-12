@@ -51,7 +51,7 @@ AI-powered travel planning assistant with real-time weather insights, intelligen
       </td>
     </tr>
   </table>
-  <p><i>📱 Fully optimized for mobile devices</i></p>
+  <p><i>📱mobile devices</i></p>
 </div>
 
 ---
